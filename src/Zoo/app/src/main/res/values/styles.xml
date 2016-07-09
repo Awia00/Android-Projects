@@ -9,7 +9,6 @@
         <item name="windowActionBar">false</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
-        <item name="colorDrawerBackground">@color/drawerBackground</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
