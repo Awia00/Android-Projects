@@ -8,19 +8,36 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MainActivityListFragment extends ListFragment {
 
+    private ArrayList<Note> notes;
+    private NoteAdapter noteAdapter;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String[] values = new String[]{"Android", "IOS", "Windows", "Blackberry", "WebOS", "Ubuntu"};
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, values);
+        notes = new ArrayList();
+        notes.add(new Note("Note title 1","Body of our note Personal", Note.Category.PERSONAL));
+        notes.add(new Note("Note title 2","Body of our note Finance", Note.Category.FINANCE));
+        notes.add(new Note("Note title 3","Body of our note Tech", Note.Category.TECHNICAL));
+        notes.add(new Note("Note title 4","Body of our note Quote", Note.Category.QUOTE));
+        notes.add(new Note("Note title 1","Body of our note Personal", Note.Category.PERSONAL));
+        notes.add(new Note("Note title 2","Body of our note Finance", Note.Category.FINANCE));
+        notes.add(new Note("Note title 3","Body of our note Tech", Note.Category.TECHNICAL));
+        notes.add(new Note("Note title 4","Body of our note Quote", Note.Category.QUOTE));
+        notes.add(new Note("Note title 1","Body of our note Personal", Note.Category.PERSONAL));
+        notes.add(new Note("Note title 2","Body of our note Finance", Note.Category.FINANCE));
+        notes.add(new Note("Note title 3","Body of our note Tech", Note.Category.TECHNICAL));
+        notes.add(new Note("Note title 4","Body of our note Quote", Note.Category.QUOTE));
 
-        setListAdapter(arrayAdapter);
+        noteAdapter = new NoteAdapter(getActivity(), notes);
+        setListAdapter(noteAdapter);
     }
 
     @Override
