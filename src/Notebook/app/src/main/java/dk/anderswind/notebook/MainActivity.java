@@ -11,6 +11,13 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String PACKAGE = "dk.anderswind.notebook";
+    public static final String NOTE_ID_EXTRA = PACKAGE + "Note Identifier";
+    public static final String NOTE_TITLE_EXTRA = PACKAGE + "Note Title";
+    public static final String NOTE_MESSAGE_EXTRA = PACKAGE + "Note Message";
+    public static final String NOTE_CATEGORY_EXTRA = PACKAGE + "Note Category";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
