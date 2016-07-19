@@ -1,5 +1,6 @@
 package dk.anderswind.notebook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,12 +12,13 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String PACKAGE = "dk.anderswind.notebook";
-    public static final String NOTE_ID_EXTRA = PACKAGE + "Note Identifier";
-    public static final String NOTE_TITLE_EXTRA = PACKAGE + "Note Title";
-    public static final String NOTE_MESSAGE_EXTRA = PACKAGE + "Note Message";
-    public static final String NOTE_CATEGORY_EXTRA = PACKAGE + "Note Category";
-
+    private static final String PACKAGE = "dk.anderswind.notebook.";
+    public static final String NOTE_ID_EXTRA = PACKAGE + "Identifier";
+    public static final String NOTE_TITLE_EXTRA = PACKAGE + "Title";
+    public static final String NOTE_MESSAGE_EXTRA = PACKAGE + "Message";
+    public static final String NOTE_CATEGORY_EXTRA = PACKAGE + "Category";
+    public static final String NOTE_VIEW_FRAGMENT_LAUNCH = PACKAGE + "FragmentToLaunch";
+    public enum FragmentToLaunch{ VIEW, EDIT, CREATE }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_add_note)
+        {
+            Intent intent = new Intent(this, NoteDetailActivity.class);
+            intent.putExtra(MainActivity.NOTE_VIEW_FRAGMENT_LAUNCH, FragmentToLaunch.CREATE);
+
+            startActivity(intent);
             return true;
         }
 

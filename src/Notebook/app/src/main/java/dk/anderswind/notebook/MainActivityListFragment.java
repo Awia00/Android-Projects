@@ -10,10 +10,14 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import dk.anderswind.notebook.MainActivity.FragmentToLaunch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,7 +55,7 @@ public class MainActivityListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        launchNoteDetailActivity(position);
+        launchNoteDetailActivity(position, FragmentToLaunch.VIEW);
     }
 
     @Override
@@ -64,16 +68,21 @@ public class MainActivityListFragment extends ListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        // grab position of the note i pressed.
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int rowPosition = info.position;
+
         switch (item.getItemId())
         {
             case R.id.edit:
+                launchNoteDetailActivity(rowPosition, FragmentToLaunch.EDIT);
                 Log.d("Menu Clicks", "We pressed edit");
                 return true;
         }
         return super.onContextItemSelected(item);
     }
 
-    private void launchNoteDetailActivity(int position)
+    private void launchNoteDetailActivity(int position, FragmentToLaunch fragmentToLaunch)
     {
         Note note = (Note) getListAdapter().getItem(position);
         Intent intent = new Intent(getActivity(), NoteDetailActivity.class);
@@ -81,6 +90,8 @@ public class MainActivityListFragment extends ListFragment {
         intent.putExtra(MainActivity.NOTE_MESSAGE_EXTRA, note.getMessage());
         intent.putExtra(MainActivity.NOTE_CATEGORY_EXTRA, note.getCategory());
         intent.putExtra(MainActivity.NOTE_ID_EXTRA, note.getNoteId());
+
+        intent.putExtra(MainActivity.NOTE_VIEW_FRAGMENT_LAUNCH, fragmentToLaunch);
         
         startActivity(intent);
     }
