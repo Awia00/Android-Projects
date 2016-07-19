@@ -27,6 +27,8 @@ public class NoteEditFragment extends Fragment {
     private Note.Category savedButtonCategory;
     private AlertDialog categoryDialogObject;
     private AlertDialog confirmDialogObject;
+    private boolean isNewNote = false;
+    private long noteId;
 
     public NoteEditFragment() {
         // Required empty public constructor
@@ -38,17 +40,16 @@ public class NoteEditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-//        Bundle bundle = this.getArguments();
-//        if(bundle != null)
-//        {
-//            boolean newNote = bundle.getBoolean(NoteDetailActivity.NEW_NOTE_EXTRA);
-//        }
+        Bundle bundle = this.getArguments();
+        if(bundle != null)
+        {
+            isNewNote = bundle.getBoolean(NoteDetailActivity.NEW_NOTE_EXTRA);
+        }
 
-        boolean isNewNode = false;
         if(savedInstanceState != null)
         {
             savedButtonCategory = (Note.Category) savedInstanceState.get(MODIFIED_CATEGORY);
-            isNewNode = (boolean) savedInstanceState.get(NoteDetailActivity.NEW_NOTE_EXTRA);
+            //isNewNote = (boolean) savedInstanceState.get(NoteDetailActivity.NEW_NOTE_EXTRA);
         }
 
         // Inflate the layout for this fragment
@@ -64,8 +65,9 @@ public class NoteEditFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         title.setText(intent.getExtras().getString(MainActivity.NOTE_TITLE_EXTRA, ""));
         message.setText(intent.getExtras().getString(MainActivity.NOTE_MESSAGE_EXTRA, ""));
+        noteId = intent.getExtras().getLong(MainActivity.NOTE_ID_EXTRA, 0);
 
-        if(isNewNode)
+        if(!isNewNote)
         {
             if(savedButtonCategory == null)
             {
@@ -145,6 +147,19 @@ public class NoteEditFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.d("Save Note", "Title:" + title.getText() + " Message:" + message.getText() + " Category:" + savedButtonCategory);
+
+                NotebookDbAdapter notebookDbAdapter = new NotebookDbAdapter(getActivity().getBaseContext());
+                notebookDbAdapter.open();
+                if(isNewNote)
+                {
+                    notebookDbAdapter.createNote(title.getText() + "", message.getText() + "",
+                            (savedButtonCategory == null)? Note.Category.PERSONAL : savedButtonCategory);
+                }
+                else
+                {
+                    notebookDbAdapter.updateNote(noteId, title.getText() + "", message.getText() + "", savedButtonCategory);
+                }
+                notebookDbAdapter.close();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
             }

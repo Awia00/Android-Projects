@@ -4,4 +4,8 @@
         android:id="@+id/edit"
         android:title="@string/menu_edit_item">
     </item>
+    <item
+        android:id="@+id/delete"
+        android:title="@string/menu_delete_item">
+    </item>
 </menu>

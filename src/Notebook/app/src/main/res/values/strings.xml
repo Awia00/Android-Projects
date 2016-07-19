@@ -13,6 +13,7 @@
 
     <!--Long Press Menu Strings-->
     <string name="menu_edit_item">Edit</string>
+    <string name="menu_delete_item">Delete</string>
 
     <!--Alert dialog-->
     <string name="category_icon_dialog_title">Choose Note Type</string>
