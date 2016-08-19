@@ -1,5 +1,6 @@
 package dk.anderswind.thetravelapp;
 
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView checkOutStation;
     private Button checkInButton;
     private Button checkOutButton;
+    private Button selectCheckInButton;
+    private Button selectCheckOutButton;
 
     private String startDestination;
     private String endDestination;
@@ -33,11 +36,15 @@ public class MainActivity extends AppCompatActivity {
 
         checkInButton = (Button) findViewById(R.id.checkInButton);
         checkOutButton = (Button) findViewById(R.id.checkOutButton);
+        selectCheckInButton = (Button) findViewById(R.id.selectCheckInButton);
+        selectCheckOutButton = (Button) findViewById(R.id.selectCheckOutButton);
         checkInStation = (TextView) findViewById(R.id.checkInStation);
         checkOutStation = (TextView) findViewById(R.id.checkOutStation);
 
         checkInButton.setOnClickListener(new CheckInButton());
         checkOutButton.setOnClickListener(new CheckOutButton());
+        selectCheckInButton.setOnClickListener(new SelectStationButton(0));
+        selectCheckOutButton.setOnClickListener(new SelectStationButton(1));
     }
 
     @Override
@@ -72,6 +79,23 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK)
+        {
+            String result = data.getStringExtra(IntentKeys.SELECTED_STATION_NAME);
+            if(requestCode == 0)
+            {
+                checkInStation.setText(result);
+            }
+            else if (requestCode == 1)
+            {
+                checkOutStation.setText(result);
+            }
+        }
+    }
+
     // This is here to allow the innerclass to make toasts.
     private void informUser(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -89,6 +113,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    class SelectStationButton implements View.OnClickListener
+    {
+        int id;
+        public SelectStationButton(int id)
+        {
+            this.id = id;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(MainActivity.this, CitiesListView.class);
+            startActivityForResult(intent, id);
+        }
+    }
     class CheckInButton implements View.OnClickListener
     {
         @Override
