@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,17 @@ public class MainActivity extends AppCompatActivity {
         checkOutButton = (Button) findViewById(R.id.checkOutButton);
         selectCheckInButton = (Button) findViewById(R.id.selectCheckInButton);
         selectCheckOutButton = (Button) findViewById(R.id.selectCheckOutButton);
+        ImageView logoImage = (ImageView) findViewById(R.id.imageView);
         checkInStation = (TextView) findViewById(R.id.checkInStation);
         checkOutStation = (TextView) findViewById(R.id.checkOutStation);
+
+        logoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, WebInfoActivity.class);
+                startActivity(intent);
+            }
+        });
 
         checkInButton.setOnClickListener(new CheckInButton());
         checkOutButton.setOnClickListener(new CheckOutButton());
@@ -161,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
 
 

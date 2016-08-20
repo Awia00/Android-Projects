@@ -72,4 +72,12 @@
         android:layout_below="@id/textView2"
         android:layout_alignParentEnd="true"
         android:enabled="false" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/train" />
 </RelativeLayout>
