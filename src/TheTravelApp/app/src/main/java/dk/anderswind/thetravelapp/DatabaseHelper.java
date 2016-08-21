@@ -12,13 +12,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, "travel", null, 1);
     }
 
+    public final String TRAVELS = "travels";
+    public final String STATIONS = "stations";
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(
-                "CREATE TABLE travels (_id integer primary key autoincrement, start text,\n" +
+                "CREATE TABLE "+TRAVELS+" (_id integer primary key autoincrement, start text,\n" +
                 "destination text);\n" +
-                "CREATE TABLE stations (_id integer primary key autoincrement, station text);");
+                "CREATE TABLE "+STATIONS+" (_id integer primary key autoincrement, station text);");
     }
 
     @Override
