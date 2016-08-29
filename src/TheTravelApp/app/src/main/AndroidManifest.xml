@@ -17,8 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CitiesListView" />
-        <activity android:name=".WebInfoActivity"></activity>
+        <activity android:name=".StationsListView" />
+        <activity android:name=".WebInfoActivity" />
+        <activity android:name=".TravelsListView" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

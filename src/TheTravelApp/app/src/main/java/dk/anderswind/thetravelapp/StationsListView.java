@@ -1,21 +1,15 @@
 package dk.anderswind.thetravelapp;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import java.util.ArrayList;
-
-public class CitiesListView extends ListActivity {
+public class StationsListView extends ListActivity {
 
     TravelDAO dbAdapter;
     @Override
@@ -26,14 +20,14 @@ public class CitiesListView extends ListActivity {
         dbAdapter.open();
         Cursor stations = dbAdapter.getStations();
         startManagingCursor(stations);
-        CursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, stations, new String[]{"station"}, new int[]{android.R.id.text1});
+        CursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, stations, new String[]{dbAdapter.STATIONS_TITLE}, new int[]{android.R.id.text1});
         setListAdapter(adapter);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         dbAdapter.close();
+        super.onDestroy();
     }
 
     @Override
@@ -43,7 +37,7 @@ public class CitiesListView extends ListActivity {
         startManagingCursor(cursor);
         Intent intent = new Intent().putExtra(
                 IntentKeys.SELECTED_STATION_NAME,
-                cursor.getString(cursor.getColumnIndexOrThrow("station")));
+                cursor.getString(cursor.getColumnIndexOrThrow(dbAdapter.STATIONS_TITLE)));
 
         setResult(RESULT_OK, intent);
         finish();

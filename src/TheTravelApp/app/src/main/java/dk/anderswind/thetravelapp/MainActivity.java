@@ -1,7 +1,6 @@
 package dk.anderswind.thetravelapp;
 
 import android.content.Intent;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,10 +29,13 @@ public class MainActivity extends AppCompatActivity {
     private String endDestination;
     private boolean isCheckingIn = true;
 
+    private TravelDAO dbAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbAdapter = new TravelDAO(this);
 
         checkInButton = (Button) findViewById(R.id.checkInButton);
         checkOutButton = (Button) findViewById(R.id.checkOutButton);
@@ -74,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "Receipt");
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        MenuItem history = menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "History");
+        MenuItem settings = menu.add(Menu.NONE, 2, Menu.NONE, "Settings");
+        history.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        settings.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -84,7 +88,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == Menu.FIRST)
         {
-            informUser(startDestination + " to " + endDestination);
+            Intent intent = new Intent(MainActivity.this, TravelsListView.class);
+            startActivity(intent);
+        }
+        if (item.getItemId() == 2)
+        {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, CitiesListView.class);
+            Intent intent = new Intent(MainActivity.this, StationsListView.class);
             startActivityForResult(intent, id);
         }
     }
@@ -141,9 +151,13 @@ public class MainActivity extends AppCompatActivity {
     {
         @Override
         public void onClick(View view) {
-            if(!TextUtils.isEmpty(checkInStation.getText()))
+            String station = checkInStation.getText().toString();
+            if(!TextUtils.isEmpty(station))
             {
                 changeToCheckIn(false);
+                dbAdapter.open();
+                dbAdapter.saveStation(station);
+                dbAdapter.close();
             }else
             {
                 checkInStation.setError("Please enter a station");
@@ -155,16 +169,24 @@ public class MainActivity extends AppCompatActivity {
     {
         @Override
         public void onClick(View view) {
-            if(!TextUtils.isEmpty(checkOutStation.getText()))
+            String station = checkOutStation.getText().toString();
+            if(!TextUtils.isEmpty(station))
             {
                 changeToCheckIn(true);
 
+
+
                 startDestination = checkInStation.getText().toString();
-                endDestination = checkOutStation.getText().toString();
+                endDestination = station;
 
                 checkInStation.setText("");
                 checkOutStation.setText("");
                 informUser("Travel finished");
+
+                dbAdapter.open();
+                dbAdapter.saveStation(station);
+                dbAdapter.saveTravels(startDestination, endDestination);
+                dbAdapter.close();
             }else
             {
                 checkOutStation.setError("Please enter a station");

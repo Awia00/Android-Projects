@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="History settings">
+
+        <ListPreference
+            android:key="historySizePref"
+            android:title="History activity size"
+            android:defaultValue="10"
+            android:entries="@array/ListSize"
+            android:entryValues="@array/ListSize">
+
+        </ListPreference>
+
+        <Preference
+            android:title="Clear History"
+            android:key="clearHistoryPref">
+
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Station settings">
+
+        <CheckBoxPreference
+            android:key="autoSavePref"
+            android:title="Automatically save stations to database"
+            android:defaultValue="true">
+
+        </CheckBoxPreference>
+
+        <Preference
+            android:title="Clear stations"
+            android:key="clearStationsPref">
+
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>
