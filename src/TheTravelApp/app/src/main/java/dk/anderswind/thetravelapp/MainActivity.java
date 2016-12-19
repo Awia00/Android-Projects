@@ -78,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem history = menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "History");
         MenuItem settings = menu.add(Menu.NONE, 2, Menu.NONE, "Settings");
+        MenuItem invite = menu.add(Menu.NONE, 3, Menu.NONE, "Invite a friend");
         history.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         settings.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        invite.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -91,9 +93,14 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, TravelsListView.class);
             startActivity(intent);
         }
-        if (item.getItemId() == 2)
+        else if (item.getItemId() == 2)
         {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == 3)
+        {
+            Intent intent = new Intent(MainActivity.this, InviteActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
