@@ -1,15 +1,10 @@
 package dk.anderswind.thetravelapp;
 
-import android.annotation.TargetApi;
 import android.app.ListActivity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -19,8 +14,6 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class InviteActivity extends ListActivity {
 
@@ -42,22 +35,6 @@ public class InviteActivity extends ListActivity {
         setListAdapter(adapter);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == PermissionRequester.REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                finish();
-                startActivity(getIntent());
-            }
-        }
-        if (requestCode == PermissionRequester.REQUEST_SEND_SMS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                finish();
-                startActivity(getIntent());
-            }
-        }
-    }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -65,7 +42,7 @@ public class InviteActivity extends ListActivity {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         startManagingCursor(cursor);
         int hasPhone = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-        if(hasPhone == 1)
+        if(hasPhone >= 1)
         {
             String userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
             Cursor user = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + userId, null, null);
@@ -75,16 +52,31 @@ public class InviteActivity extends ListActivity {
             SmsManager smsManager = SmsManager.getDefault();
             try{
                 smsManager.sendTextMessage(phoneNumber, null, getResources().getString(R.string.invite_sms_text), null, null);
+                Toast.makeText(getApplicationContext(), "Your sms has successfully sent!",
+                        Toast.LENGTH_LONG).show();
             }catch (Exception e)
             {
-                System.out.println(e);
+                Toast.makeText(getApplicationContext(), "Could not send sms",
+                        Toast.LENGTH_LONG).show();
             }
-
-
-            Toast.makeText(getApplicationContext(), "Your sms has successfully sent!",
+        } else {
+            Toast.makeText(getApplicationContext(), "This contact does not have a phone number",
                     Toast.LENGTH_LONG).show();
         }
 
         finish();
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == PermissionRequester.REQUEST_READ_CONTACTS || requestCode == PermissionRequester.REQUEST_SEND_SMS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                finish();
+                startActivity(getIntent());
+            }
+        }
     }
 }
