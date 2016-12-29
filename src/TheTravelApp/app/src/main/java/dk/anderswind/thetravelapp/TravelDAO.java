@@ -19,11 +19,16 @@ public class TravelDAO {
     public final String TRAVELS_ID = "_id";
     public final String TRAVELS_START_TITLE = "start";
     public final String TRAVELS_DESTINATION_TITLE = "destination";
+    public final String TRAVELS_DISTANCE = "destination";
     public final String STATIONS_TABLE = "stations";
     public final String STATIONS_ID = "_id";
     public final String STATIONS_TITLE = "station";
     public final String CREATE_TRAVELS =
-            "CREATE TABLE " + TRAVELS_TABLE + " (" + TRAVELS_ID + " integer primary key autoincrement, " + TRAVELS_START_TITLE + " text, " + TRAVELS_DESTINATION_TITLE + " text);";
+            "CREATE TABLE " + TRAVELS_TABLE
+                    + " (" + TRAVELS_ID + " integer primary key autoincrement, "
+                    + TRAVELS_START_TITLE + " text, "
+                    + TRAVELS_DESTINATION_TITLE + " text, "
+                    + TRAVELS_DISTANCE + " real);";
     public final String CREATE_STATIONS = "CREATE TABLE " + STATIONS_TABLE + " (" + STATIONS_ID + " integer primary key autoincrement, " + STATIONS_TITLE + " text);";
 
 
@@ -49,11 +54,12 @@ public class TravelDAO {
         return db.query(TRAVELS_TABLE, new String[]{TRAVELS_ID, TRAVELS_START_TITLE, TRAVELS_DESTINATION_TITLE}, null, null, null, null, TRAVELS_ID + " DESC", limit);
     }
 
-    void saveTravels(String start, String destination)
+    void saveTravels(String start, String destination, float distance)
     {
         ContentValues insertValues = new ContentValues();
         insertValues.put(TRAVELS_START_TITLE, start);
         insertValues.put(TRAVELS_DESTINATION_TITLE, destination);
+        insertValues.put(TRAVELS_DISTANCE, distance);
         db.insert(TRAVELS_TABLE, null, insertValues);
     }
 
@@ -90,7 +96,7 @@ public class TravelDAO {
 
     private class DatabaseHelper extends SQLiteOpenHelper {
         public static final String DATABASE_NAME = "traveldb";
-        public static final int DATABASE_VERSION = 5;
+        public static final int DATABASE_VERSION = 6;
 
         public DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);

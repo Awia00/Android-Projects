@@ -20,7 +20,12 @@ public class TravelsListView extends ListActivity {
         dbAdapter.open();
         Cursor travels = dbAdapter.getTravels();
         startManagingCursor(travels);
-        CursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.historyitem, travels, new String[]{dbAdapter.TRAVELS_START_TITLE, dbAdapter.TRAVELS_DESTINATION_TITLE}, new int[]{R.id.start, R.id.destination});
+        CursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                R.layout.historyitem,
+                travels,
+                new String[]{dbAdapter.TRAVELS_START_TITLE, dbAdapter.TRAVELS_DESTINATION_TITLE, dbAdapter.TRAVELS_DISTANCE},
+                new int[]{R.id.start, R.id.destination, R.id.distance});
         setListAdapter(adapter);
     }
 

@@ -1,8 +1,12 @@
 package dk.anderswind.thetravelapp;
 
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +23,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String LAST_START = IntentKeys.PACKAGE_NAME + "LastStart";
@@ -33,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private Button selectCheckOutButton;
 
     private String startDestination;
+    private Location startLocation;
     private String endDestination;
+    private Location destinationLocation;
     private boolean isCheckingIn = true;
 
     private TravelDAO dbAdapter;
@@ -60,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        checkInButton.setOnClickListener(new CheckInButton());
-        checkOutButton.setOnClickListener(new CheckOutButton());
+        checkInButton.setOnClickListener(new CheckInButton(this));
+        checkOutButton.setOnClickListener(new CheckOutButton(this));
         selectCheckInButton.setOnClickListener(new SelectStationButton(0));
         selectCheckOutButton.setOnClickListener(new SelectStationButton(1));
     }
@@ -191,9 +200,30 @@ public class MainActivity extends AppCompatActivity {
     }
     class CheckInButton implements View.OnClickListener
     {
+        private Context context;
+
+        public CheckInButton(Context context) {
+            this.context = context;
+        }
+
         @Override
         public void onClick(View view) {
             String station = checkInStation.getText().toString();
+            if(Geocoder.isPresent())
+            {
+                Geocoder geocoder = new Geocoder(context);
+                try{
+                    List<Address> addressList = geocoder.getFromLocationName(station, 1);
+                    if(addressList.size()>0)
+                    {
+                        Address a = addressList.get(0);
+                        startLocation = new Location(a.getAddressLine(0));
+                    }
+                } catch(IOException e)
+                {
+
+                }
+            }
             if(!TextUtils.isEmpty(station))
             {
                 changeToCheckIn(false);
@@ -209,25 +239,51 @@ public class MainActivity extends AppCompatActivity {
 
     class CheckOutButton implements View.OnClickListener
     {
+        private Context context;
+
+        public CheckOutButton(Context context) {
+            this.context = context;
+        }
+
         @Override
         public void onClick(View view) {
             String station = checkOutStation.getText().toString();
+            if(Geocoder.isPresent())
+            {
+                Geocoder geocoder = new Geocoder(context);
+                try{
+                    List<Address> addressList = geocoder.getFromLocationName(station, 1);
+                    if(addressList.size()>0)
+                    {
+                        Address a = addressList.get(0);
+                        destinationLocation = new Location(a.getAddressLine(0));
+                    }
+                } catch(IOException e)
+                {
+
+                }
+            }
             if(!TextUtils.isEmpty(station))
             {
+                float distance = 0;
+                if(destinationLocation != null && startLocation != null) {
+                    distance = destinationLocation.distanceTo(startLocation) / 1000;
+                }
                 changeToCheckIn(true);
-
-
 
                 startDestination = checkInStation.getText().toString();
                 endDestination = station;
 
                 checkInStation.setText("");
                 checkOutStation.setText("");
+                startLocation = null;
+                destinationLocation = null;
+
                 informUser("Travel finished");
 
                 dbAdapter.open();
                 dbAdapter.saveStation(station);
-                dbAdapter.saveTravels(startDestination, endDestination);
+                dbAdapter.saveTravels(startDestination, endDestination, distance);
                 dbAdapter.close();
             }else
             {
